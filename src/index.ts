@@ -106,6 +106,11 @@ app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
   }
 });
 
+// 2. Cuando la persona envía el formulario:
+//    a) el bot postea el mensaje directo al canal (así el formato
+//       -negrita, listas, links- se renderiza correctamente)
+//    b) le pega al webhook del Workflow Builder solo para guardar
+//       la fila en Google Sheets
 app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger }) => {
   await ack();
 
@@ -119,14 +124,18 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
     .map((archivo: any) => archivo.url_private)
     .join('\n');
 
+  // Lista de archivos en mrkdwn, usando el permalink para que sea clickeable
   const archivosMrkdwn: string = archivos
     .map((archivo: any) => `• <${archivo.permalink || archivo.url_private}|${archivo.name}>`)
     .join('\n');
 
+  // body.user.name ya trae el handle del usuario, sin necesidad de
+  // llamar a la API ni de scopes adicionales.
   const autorNombre: string = body.user.name || body.user.id;
 
   const targetChannel = process.env.TARGET_CHANNEL_ID;
 
+  // a) Postear el mensaje directo al canal, con formato real
   if (targetChannel) {
     try {
       const blocks: any[] = [
@@ -161,7 +170,7 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
 
       await client.chat.postMessage({
         channel: targetChannel,
-        text: `Nuevo aporte para la AI Newsletter de ${autorNombre}`,
+        text: `Nuevo aporte para la AI Newsletter de ${autorNombre}`, // fallback para notificaciones
         blocks,
       });
     } catch (error) {
@@ -171,6 +180,7 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
     logger.error('Falta configurar TARGET_CHANNEL_ID en las variables de entorno');
   }
 
+  // b) Avisarle al webhook del workflow para que guarde la fila en Sheets
   const webhookUrl = process.env.WORKFLOW_WEBHOOK_URL;
 
   if (!webhookUrl) {
