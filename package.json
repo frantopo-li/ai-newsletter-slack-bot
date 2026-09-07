@@ -1,0 +1,23 @@
+{
+  "name": "ai-newsletter-slack-bot",
+  "version": "1.0.0",
+  "description": "Slash command /ai-newsletter that triggers a Slack form and sends answers to a webhook of a Workflow Builder",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.19.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.2"
+  }
+}
