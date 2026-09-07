@@ -1,0 +1,1 @@
+export { registerNewsletterHandlers } from './handlers';
