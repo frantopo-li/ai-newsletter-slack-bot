@@ -9,6 +9,55 @@ const app = new App({
   port: Number(process.env.PORT) || 3000,
 });
 
+function textElementToMrkdwn(el: any): string {
+  if (el.type === 'link') {
+    return el.text ? `<${el.url}|${el.text}>` : `<${el.url}>`;
+  }
+  if (el.type === 'user') {
+    return `<@${el.user_id}>`;
+  }
+  if (el.type === 'emoji') {
+    return `:${el.name}:`;
+  }
+  if (el.type === 'text') {
+    let text = el.text ?? '';
+    const style = el.style ?? {};
+    if (style.code) text = `\`${text}\``;
+    if (style.bold) text = `*${text}*`;
+    if (style.italic) text = `_${text}_`;
+    if (style.strike) text = `~${text}~`;
+    return text;
+  }
+  return '';
+}
+
+function sectionToMrkdwn(section: any): string {
+  return (section.elements ?? []).map(textElementToMrkdwn).join('');
+}
+
+function richTextToMrkdwn(richTextValue: any): string {
+  const elements = richTextValue?.elements ?? [];
+  const lines: string[] = [];
+
+  for (const block of elements) {
+    if (block.type === 'rich_text_section') {
+      lines.push(sectionToMrkdwn(block));
+    } else if (block.type === 'rich_text_list') {
+      const isOrdered = block.style === 'ordered';
+      block.elements.forEach((item: any, index: number) => {
+        const prefix = isOrdered ? `${index + 1}. ` : '- ';
+        lines.push(prefix + sectionToMrkdwn(item));
+      });
+    } else if (block.type === 'rich_text_quote') {
+      lines.push('> ' + sectionToMrkdwn(block));
+    } else if (block.type === 'rich_text_preformatted') {
+      lines.push('```' + sectionToMrkdwn(block) + '```');
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // 1. When someone writes /ai-newsletter, we open the modal (form)
 app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
   await ack();
@@ -31,9 +80,8 @@ app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
               text: 'Una herramienta, skill, tip o caso de uso que quieras compartir con el resto del equipo:',
             },
             element: {
-              type: 'plain_text_input',
+              type: 'rich_text_input',
               action_id: 'contenido_input',
-              multiline: true,
             },
           },
           {
@@ -42,12 +90,12 @@ app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
             optional: true,
             label: {
               type: 'plain_text',
-              text: 'Un archivo que quieras compartir (opcional)',
+              text: 'Archivos que quieras compartir (opcional)',
             },
             element: {
               type: 'file_input',
               action_id: 'archivo_input',
-              max_files: 1,
+              max_files: 10,
             },
           },
         ],
@@ -58,16 +106,23 @@ app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
   }
 });
 
-// 2. When the person sends the form, we take the data and pass it to the webhook of the Workflow Builder
+// 2. Cuando la persona envía el formulario, tomamos los datos
+//    y se los pasamos al webhook del Workflow Builder
 app.view('ai_newsletter_submission', async ({ ack, body, view, logger }) => {
   await ack();
 
   const values = view.state.values as any;
 
-  const contenido: string = values.contenido_block.contenido_input.value ?? '';
-  const archivos = values.archivo_block?.archivo_input?.files ?? [];
-  const archivoUrl: string = archivos.length > 0 ? archivos[0].url_private : '';
+  const contenidoRichText = values.contenido_block.contenido_input.rich_text_value;
+  const contenido: string = richTextToMrkdwn(contenidoRichText);
 
+  const archivos = values.archivo_block?.archivo_input?.files ?? [];
+  const archivoUrl: string = archivos
+    .map((archivo: any) => archivo.url_private)
+    .join('\n');
+
+  // body.user.name ya trae el handle del usuario, sin necesidad de
+  // llamar a la API ni de scopes adicionales.
   const autorNombre: string = body.user.name || body.user.id;
 
   const webhookUrl = process.env.WORKFLOW_WEBHOOK_URL;
