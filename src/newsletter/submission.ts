@@ -7,6 +7,7 @@ import {
   TEAM_ACTION_ID,
   TEAM_BLOCK_ID,
 } from './constants';
+import { formatUsernameAsName } from './format-username';
 import type { NewsletterSubmission, NewsletterViewState } from './types';
 
 interface SubmissionAuthor {
@@ -23,7 +24,7 @@ export function parseSubmission(
   return {
     content: richTextToMrkdwn(values[CONTENT_BLOCK_ID]?.[CONTENT_ACTION_ID]?.rich_text_value),
     files: values[FILES_BLOCK_ID]?.[FILES_ACTION_ID]?.files ?? [],
-    authorName: author.name || author.id,
+    authorName: author.name ? formatUsernameAsName(author.name) : author.id,
     authorId: author.id,
     team: values[TEAM_BLOCK_ID]?.[TEAM_ACTION_ID]?.selected_option?.value ?? '',
   };
