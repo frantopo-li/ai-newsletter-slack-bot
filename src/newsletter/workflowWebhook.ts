@@ -3,7 +3,7 @@ import { env } from '../config/env';
 import type { NewsletterSubmission } from './types';
 
 export async function saveToSpreadsheet(
-  { content, files, authorName }: NewsletterSubmission,
+  { content, files, authorName, team }: NewsletterSubmission,
   logger: Logger,
 ): Promise<void> {
   const webhookUrl = env.workflowWebhookUrl;
@@ -21,6 +21,7 @@ export async function saveToSpreadsheet(
         contenido: content,
         archivo_url: files.map((file) => file.url_private).join('\n'),
         autor: authorName,
+        equipo: team,
       }),
     });
 

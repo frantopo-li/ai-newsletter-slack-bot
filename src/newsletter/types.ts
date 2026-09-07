@@ -12,6 +12,7 @@ export interface NewsletterSubmission {
   files: SlackUploadedFile[];
   authorName: string;
   authorId: string;
+  team: string;
 }
 
 export interface NewsletterViewState {
@@ -20,6 +21,10 @@ export interface NewsletterViewState {
       [actionId: string]: {
         rich_text_value?: RichTextValue;
         files?: SlackUploadedFile[];
+        selected_option?: {
+          value: string;
+          text: { type: string; text: string };
+        };
       };
     };
   };

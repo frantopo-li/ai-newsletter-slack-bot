@@ -4,6 +4,8 @@ import {
   CONTENT_BLOCK_ID,
   FILES_ACTION_ID,
   FILES_BLOCK_ID,
+  TEAM_ACTION_ID,
+  TEAM_BLOCK_ID,
 } from './constants';
 import type { NewsletterSubmission, NewsletterViewState } from './types';
 
@@ -23,5 +25,6 @@ export function parseSubmission(
     files: values[FILES_BLOCK_ID]?.[FILES_ACTION_ID]?.files ?? [],
     authorName: author.name || author.id,
     authorId: author.id,
+    team: values[TEAM_BLOCK_ID]?.[TEAM_ACTION_ID]?.selected_option?.value ?? '',
   };
 }

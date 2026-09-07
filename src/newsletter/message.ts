@@ -12,13 +12,14 @@ export function buildNewsletterMessage({
   files,
   authorName,
   authorId,
+  team,
 }: NewsletterSubmission): NewsletterMessageContent {
   const blocks: KnownBlock[] = [
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* <@${authorId}>\n\n${content}`,
+        text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* <@${authorId}>\n🏷️ *Team:* ${team}\n\n${content}`,
       },
     },
   ];
@@ -34,7 +35,7 @@ export function buildNewsletterMessage({
   }
 
   return {
-    text: `Nuevo aporte para la AI Newsletter de ${authorName}`,
+    text: `Nuevo aporte para la AI Newsletter de ${authorName} (${team})`,
     blocks,
   };
 }

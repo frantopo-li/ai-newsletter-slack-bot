@@ -5,6 +5,9 @@ import {
   FILES_ACTION_ID,
   FILES_BLOCK_ID,
   NEWSLETTER_VIEW_CALLBACK_ID,
+  TEAM_ACTION_ID,
+  TEAM_BLOCK_ID,
+  TEAM_OPTIONS,
 } from './constants';
 
 const MAX_FILES = 10;
@@ -16,6 +19,23 @@ export const newsletterModal: View = {
   submit: { type: 'plain_text', text: 'Enviar' },
   close: { type: 'plain_text', text: 'Cancelar' },
   blocks: [
+    {
+      type: 'input',
+      block_id: TEAM_BLOCK_ID,
+      label: {
+        type: 'plain_text',
+        text: 'Team',
+      },
+      element: {
+        type: 'static_select',
+        action_id: TEAM_ACTION_ID,
+        placeholder: { type: 'plain_text', text: 'Seleccioná un equipo' },
+        options: TEAM_OPTIONS.map((team) => ({
+          text: { type: 'plain_text', text: team },
+          value: team,
+        })),
+      },
+    },
     {
       type: 'input',
       block_id: CONTENT_BLOCK_ID,
