@@ -19,7 +19,7 @@ export function buildNewsletterMessage({
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `📰 *New contribution to the AI Newsletter:*\n\n💡 *Author:* <@${authorId}>\n🏷️ *Team:* ${team}\n\n${content}`,
+        text: `📰 *New contribution to the AI Newsletter:*\n\n💡 *Author:* <@${authorId}>\n🏷️ *Useful For:* ${team}\n\n${content}`,
       },
     },
   ];
