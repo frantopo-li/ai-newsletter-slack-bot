@@ -9,6 +9,7 @@ const app = new App({
   port: Number(process.env.PORT) || 3000,
 });
 
+// Convierte un elemento de texto individual (con estilos) a mrkdwn de Slack
 function textElementToMrkdwn(el: any): string {
   if (el.type === 'link') {
     return el.text ? `<${el.url}|${el.text}>` : `<${el.url}>`;
@@ -31,10 +32,12 @@ function textElementToMrkdwn(el: any): string {
   return '';
 }
 
+// Convierte una "sección" (grupo de elementos de texto) a una línea de mrkdwn
 function sectionToMrkdwn(section: any): string {
   return (section.elements ?? []).map(textElementToMrkdwn).join('');
 }
 
+// Convierte el valor completo de un rich_text_input a un string en mrkdwn de Slack
 function richTextToMrkdwn(richTextValue: any): string {
   const elements = richTextValue?.elements ?? [];
   const lines: string[] = [];
@@ -143,7 +146,7 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n${contenido}`,
+            text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* ${autorNombre}\n\n${contenido}`,
           },
         },
       ];
@@ -158,20 +161,12 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
         });
       }
 
-      blocks.push({
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `💡 Autor: ${autorNombre}`,
-          },
-        ],
-      });
-
       await client.chat.postMessage({
         channel: targetChannel,
         text: `Nuevo aporte para la AI Newsletter de ${autorNombre}`, // fallback para notificaciones
         blocks,
+        unfurl_links: false,
+        unfurl_media: false,
       });
     } catch (error) {
       logger.error('Error posteando el mensaje al canal:', error);
