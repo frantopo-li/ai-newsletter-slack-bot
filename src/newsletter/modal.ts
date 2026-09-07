@@ -21,23 +21,6 @@ export const newsletterModal: View = {
   blocks: [
     {
       type: 'input',
-      block_id: TEAM_BLOCK_ID,
-      label: {
-        type: 'plain_text',
-        text: 'Team where it may be useful',
-      },
-      element: {
-        type: 'static_select',
-        action_id: TEAM_ACTION_ID,
-        placeholder: { type: 'plain_text', text: 'Select a team' },
-        options: TEAM_OPTIONS.map((team) => ({
-          text: { type: 'plain_text', text: team },
-          value: team,
-        })),
-      },
-    },
-    {
-      type: 'input',
       block_id: CONTENT_BLOCK_ID,
       label: {
         type: 'plain_text',
@@ -60,6 +43,23 @@ export const newsletterModal: View = {
         type: 'file_input',
         action_id: FILES_ACTION_ID,
         max_files: MAX_FILES,
+      },
+    },
+    {
+      type: 'input',
+      block_id: TEAM_BLOCK_ID,
+      label: {
+        type: 'plain_text',
+        text: 'Team where it may be useful',
+      },
+      element: {
+        type: 'static_select',
+        action_id: TEAM_ACTION_ID,
+        placeholder: { type: 'plain_text', text: 'Select a team' },
+        options: TEAM_OPTIONS.map((team) => ({
+          text: { type: 'plain_text', text: team },
+          value: team,
+        })),
       },
     },
   ],
