@@ -16,7 +16,6 @@ export const TEAM_OPTIONS = [
   'Managers',
   'Marketing',
   'Project Managers',
-  'Project',
   'QA',
   'Other',
 ] as const;
