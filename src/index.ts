@@ -67,7 +67,8 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, logger }) => {
   const contenido: string = values.contenido_block.contenido_input.value ?? '';
   const archivos = values.archivo_block?.archivo_input?.files ?? [];
   const archivoUrl: string = archivos.length > 0 ? archivos[0].url_private : '';
-  const autorId: string = body.user.id;
+
+  const autorNombre: string = body.user.name || body.user.id;
 
   const webhookUrl = process.env.WORKFLOW_WEBHOOK_URL;
 
@@ -83,7 +84,7 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, logger }) => {
       body: JSON.stringify({
         contenido,
         archivo_url: archivoUrl,
-        autor: `<@${autorId}>`,
+        autor: autorNombre,
       }),
     });
 
