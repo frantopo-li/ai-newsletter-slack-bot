@@ -24,7 +24,7 @@ export const newsletterModal: View = {
       block_id: TEAM_BLOCK_ID,
       label: {
         type: 'plain_text',
-        text: 'Team',
+        text: 'Team where it may be useful',
       },
       element: {
         type: 'static_select',
