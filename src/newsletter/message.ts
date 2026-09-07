@@ -19,7 +19,7 @@ export function buildNewsletterMessage({
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* <@${authorId}>\n🏷️ *Team:* ${team}\n\n${content}`,
+        text: `📰 *New contribution to the AI Newsletter:*\n\n💡 *Author:* <@${authorId}>\n🏷️ *Team:* ${team}\n\n${content}`,
       },
     },
   ];
@@ -29,13 +29,13 @@ export function buildNewsletterMessage({
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `📎 *Archivos:*\n${filesToMrkdwn(files)}`,
+        text: `📎 *Files:*\n${filesToMrkdwn(files)}`,
       },
     });
   }
 
   return {
-    text: `Nuevo aporte para la AI Newsletter de ${authorName} (${team})`,
+    text: `New contribution to the AI Newsletter from ${authorName} (${team})`,
     blocks,
   };
 }

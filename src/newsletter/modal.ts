@@ -16,8 +16,8 @@ export const newsletterModal: View = {
   type: 'modal',
   callback_id: NEWSLETTER_VIEW_CALLBACK_ID,
   title: { type: 'plain_text', text: 'AI Newsletter' },
-  submit: { type: 'plain_text', text: 'Enviar' },
-  close: { type: 'plain_text', text: 'Cancelar' },
+  submit: { type: 'plain_text', text: 'Send' },
+  close: { type: 'plain_text', text: 'Cancel' },
   blocks: [
     {
       type: 'input',
@@ -29,7 +29,7 @@ export const newsletterModal: View = {
       element: {
         type: 'static_select',
         action_id: TEAM_ACTION_ID,
-        placeholder: { type: 'plain_text', text: 'Seleccioná un equipo' },
+        placeholder: { type: 'plain_text', text: 'Select a team' },
         options: TEAM_OPTIONS.map((team) => ({
           text: { type: 'plain_text', text: team },
           value: team,
@@ -41,7 +41,7 @@ export const newsletterModal: View = {
       block_id: CONTENT_BLOCK_ID,
       label: {
         type: 'plain_text',
-        text: 'Una herramienta, skill, tip o caso de uso que quieras compartir con el resto del equipo:',
+        text: 'A tool, skill, tip or use case you want to share with the rest of the team:',
       },
       element: {
         type: 'rich_text_input',
@@ -54,7 +54,7 @@ export const newsletterModal: View = {
       optional: true,
       label: {
         type: 'plain_text',
-        text: 'Archivos que quieras compartir (opcional)',
+        text: 'Files you want to share (optional)',
       },
       element: {
         type: 'file_input',

@@ -1,15 +1,13 @@
 # AI Newsletter Slack Bot
 
-Bot interno de Slack que habilita el comando `/ai-newsletter`. Cualquiera en
-el workspace puede escribirlo desde cualquier canal para compartir una
-herramienta, tip, skill o caso de uso de IA que le haya resultado útil, sin
-que ese hallazgo quede perdido entre conversaciones.
+Internal Slack bot that enables the `/ai-newsletter` command. Anyone in the
+workspace can run it from any channel to share an AI tool, tip, skill or use
+case they found useful, so that finding doesn't get lost in conversations.
 
-Al escribir el comando se abre al instante un formulario nativo de Slack con
-un campo de texto enriquecido (bold, listas, links) y la posibilidad de
-adjuntar uno o varios archivos. Al enviarlo, el bot postea automáticamente un
-mensaje en el canal `#ai-newsletter` con el autor mencionado, el
-contenido formateado y los archivos listados y en paralelo dispara un
-Workflow de Slack que guarda una copia de esa información (autor, contenido,
-archivos y fecha) en una spreadsheet de Google Sheets, para tener un registro
-histórico y procesable.
+Running the command instantly opens a native Slack form with a team selector, a
+rich text field (bold, lists, links) and the option to attach one or more files.
+On submit, the bot posts a message in the `#ai-newsletter` channel with the
+author mentioned, their team, the formatted content and the files listed, and in
+parallel triggers a Slack Workflow that saves a copy of that information
+(author, team, content, files and date) to a Google Sheets spreadsheet, to keep
+a historical and processable record.

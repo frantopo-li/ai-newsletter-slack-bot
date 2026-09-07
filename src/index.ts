@@ -5,7 +5,7 @@ registerNewsletterHandlers(app);
 
 async function start(): Promise<void> {
   await app.start();
-  console.log('⚡️ AI Newsletter bot corriendo');
+  console.log('⚡️ AI Newsletter bot running');
 }
 
 start();

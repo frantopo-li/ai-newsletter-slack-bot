@@ -1,14 +1,14 @@
 display_information:
   name: AI Newsletter Bot
-  description: Abre un formulario al escribir /ai-newsletter
+  description: Opens a form when you type /ai-newsletter
 features:
   bot_user:
     display_name: AI Newsletter Bot
     always_online: true
   slash_commands:
     - command: /ai-newsletter
-      description: Compartí un tip, herramienta o caso de uso de IA
-      url: https://TU-APP.onrender.com/slack/events
+      description: Share an AI tip, tool or use case
+      url: https://YOUR-APP.onrender.com/slack/events
       should_escape: false
 oauth_config:
   scopes:
@@ -18,7 +18,7 @@ oauth_config:
 settings:
   interactivity:
     is_enabled: true
-    request_url: https://TU-APP.onrender.com/slack/events
+    request_url: https://YOUR-APP.onrender.com/slack/events
   org_deploy_enabled: false
   socket_mode_enabled: false
   token_rotation_enabled: false

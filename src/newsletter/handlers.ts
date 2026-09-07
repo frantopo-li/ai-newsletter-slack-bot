@@ -17,7 +17,7 @@ export function registerNewsletterHandlers(app: App): void {
         view: newsletterModal,
       });
     } catch (error) {
-      logger.error('Error abriendo el modal:', error);
+      logger.error('Error opening the modal:', error);
     }
   });
 
@@ -36,10 +36,10 @@ export function registerNewsletterHandlers(app: App): void {
           unfurl_media: false,
         });
       } catch (error) {
-        logger.error('Error posteando el mensaje al canal:', error);
+        logger.error('Error posting the message to the channel:', error);
       }
     } else {
-      logger.error('Falta configurar TARGET_CHANNEL_ID en las variables de entorno');
+      logger.error('Missing TARGET_CHANNEL_ID environment variable');
     }
 
     await saveToSpreadsheet(submission, logger);
