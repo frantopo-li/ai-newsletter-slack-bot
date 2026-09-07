@@ -7,5 +7,6 @@ export const env = {
   slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
   port: Number(process.env.PORT) || 3000,
   targetChannelId: process.env.TARGET_CHANNEL_ID,
+  adminChannelId: process.env.ADMIN_CHANNEL_ID,
   workflowWebhookUrl: process.env.WORKFLOW_WEBHOOK_URL,
 };

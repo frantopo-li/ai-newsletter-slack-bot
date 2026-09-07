@@ -5,12 +5,12 @@ import type { NewsletterSubmission } from './types';
 export async function saveToSpreadsheet(
   { content, files, authorName, team }: NewsletterSubmission,
   logger: Logger,
-): Promise<void> {
+): Promise<boolean> {
   const webhookUrl = env.workflowWebhookUrl;
 
   if (!webhookUrl) {
     logger.error('Missing WORKFLOW_WEBHOOK_URL environment variable');
-    return;
+    return false;
   }
 
   try {
@@ -18,10 +18,10 @@ export async function saveToSpreadsheet(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contenido: content,
-        archivo_url: files.map((file) => file.url_private).join('\n'),
-        autor: authorName,
-        equipo: team,
+        content,
+        file_url: files.map((file) => file.url_private).join('\n'),
+        author: authorName,
+        team,
       }),
     });
 
@@ -31,8 +31,12 @@ export async function saveToSpreadsheet(
         response.status,
         await response.text(),
       );
+      return false;
     }
+
+    return true;
   } catch (error) {
     logger.error('Error calling the workflow webhook:', error);
+    return false;
   }
 }

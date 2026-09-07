@@ -1,5 +1,7 @@
-import type { KnownBlock } from '@slack/bolt';
+import type { AllMiddlewareArgs, KnownBlock } from '@slack/bolt';
 import type { RichTextValue } from '../mrkdwn/types';
+
+export type SlackClient = AllMiddlewareArgs['client'];
 
 export interface SlackUploadedFile {
   name: string;

@@ -1,11 +1,11 @@
 import type { App } from '@slack/bolt';
-import { env } from '../config/env';
+import { postToChannel } from './channel';
 import { NEWSLETTER_COMMAND, NEWSLETTER_VIEW_CALLBACK_ID } from './constants';
-import { buildNewsletterMessage } from './message';
+import { notifyError, type FailedStep } from './error-alert';
 import { newsletterModal } from './modal';
 import { parseSubmission } from './submission';
 import type { NewsletterViewState } from './types';
-import { saveToSpreadsheet } from './workflowWebhook';
+import { saveToSpreadsheet } from './workflow-webhook';
 
 export function registerNewsletterHandlers(app: App): void {
   app.command(NEWSLETTER_COMMAND, async ({ ack, body, client, logger }) => {
@@ -25,23 +25,18 @@ export function registerNewsletterHandlers(app: App): void {
     await ack();
 
     const submission = parseSubmission(view.state as NewsletterViewState, body.user);
-    const targetChannel = env.targetChannelId;
+    const failedSteps: FailedStep[] = [];
 
-    if (targetChannel) {
-      try {
-        await client.chat.postMessage({
-          channel: targetChannel,
-          ...buildNewsletterMessage(submission),
-          unfurl_links: false,
-          unfurl_media: false,
-        });
-      } catch (error) {
-        logger.error('Error posting the message to the channel:', error);
-      }
-    } else {
-      logger.error('Missing TARGET_CHANNEL_ID environment variable');
+    if (!(await postToChannel(client, submission, logger))) {
+      failedSteps.push('channel message');
     }
 
-    await saveToSpreadsheet(submission, logger);
+    if (!(await saveToSpreadsheet(submission, logger))) {
+      failedSteps.push('spreadsheet save');
+    }
+
+    if (failedSteps.length > 0) {
+      await notifyError(client, { authorId: submission.authorId, failedSteps }, logger);
+    }
   });
 }

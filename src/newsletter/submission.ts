@@ -1,4 +1,4 @@
-import { richTextToMrkdwn } from '../mrkdwn/richText';
+import { richTextToMrkdwn } from '../mrkdwn/rich-text';
 import {
   CONTENT_ACTION_ID,
   CONTENT_BLOCK_ID,
