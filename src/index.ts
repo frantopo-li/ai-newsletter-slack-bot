@@ -58,7 +58,7 @@ function richTextToMrkdwn(richTextValue: any): string {
   return lines.join('\n');
 }
 
-// 1. When someone writes /ai-newsletter, we open the modal (form)
+// 1. Cuando alguien escribe /ai-newsletter, abrimos el modal (formulario)
 app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
   await ack();
 
@@ -106,9 +106,7 @@ app.command('/ai-newsletter', async ({ ack, body, client, logger }) => {
   }
 });
 
-// 2. Cuando la persona envía el formulario, tomamos los datos
-//    y se los pasamos al webhook del Workflow Builder
-app.view('ai_newsletter_submission', async ({ ack, body, view, logger }) => {
+app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger }) => {
   await ack();
 
   const values = view.state.values as any;
@@ -121,9 +119,57 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, logger }) => {
     .map((archivo: any) => archivo.url_private)
     .join('\n');
 
-  // body.user.name ya trae el handle del usuario, sin necesidad de
-  // llamar a la API ni de scopes adicionales.
+  const archivosMrkdwn: string = archivos
+    .map((archivo: any) => `• <${archivo.permalink || archivo.url_private}|${archivo.name}>`)
+    .join('\n');
+
   const autorNombre: string = body.user.name || body.user.id;
+
+  const targetChannel = process.env.TARGET_CHANNEL_ID;
+
+  if (targetChannel) {
+    try {
+      const blocks: any[] = [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n${contenido}`,
+          },
+        },
+      ];
+
+      if (archivos.length > 0) {
+        blocks.push({
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `📎 *Archivos:*\n${archivosMrkdwn}`,
+          },
+        });
+      }
+
+      blocks.push({
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `💡 Autor: ${autorNombre}`,
+          },
+        ],
+      });
+
+      await client.chat.postMessage({
+        channel: targetChannel,
+        text: `Nuevo aporte para la AI Newsletter de ${autorNombre}`,
+        blocks,
+      });
+    } catch (error) {
+      logger.error('Error posteando el mensaje al canal:', error);
+    }
+  } else {
+    logger.error('Falta configurar TARGET_CHANNEL_ID en las variables de entorno');
+  }
 
   const webhookUrl = process.env.WORKFLOW_WEBHOOK_URL;
 
