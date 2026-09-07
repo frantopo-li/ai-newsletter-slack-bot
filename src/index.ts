@@ -132,9 +132,14 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
     .map((archivo: any) => `• <${archivo.permalink || archivo.url_private}|${archivo.name}>`)
     .join('\n');
 
-  // body.user.name ya trae el handle del usuario, sin necesidad de
-  // llamar a la API ni de scopes adicionales.
+  // body.user.name (el handle) sigue sirviendo para la fila de la spreadsheet,
+  // sin necesidad de scopes extra.
   const autorNombre: string = body.user.name || body.user.id;
+
+  // Para el mensaje en el canal, usamos la mención real <@ID> — como el bot
+  // postea el mensaje directamente (no vía variable de webhook), Slack SÍ
+  // la renderiza como @mención clickeable con el nombre de la persona.
+  const autorMencion: string = `<@${body.user.id}>`;
 
   const targetChannel = process.env.TARGET_CHANNEL_ID;
 
@@ -146,7 +151,7 @@ app.view('ai_newsletter_submission', async ({ ack, body, view, client, logger })
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* ${autorNombre}\n\n${contenido}`,
+            text: `📰 *Nuevo aporte para la AI Newsletter:*\n\n💡 *Autor:* ${autorMencion}\n\n${contenido}`,
           },
         },
       ];
