@@ -1,5 +1,6 @@
 export const NEWSLETTER_COMMAND = '/ai-newsletter';
 export const NEWSLETTER_VIEW_CALLBACK_ID = 'ai_newsletter_submission';
+export const NEWSLETTER_SHORTCUT_CALLBACK_ID = 'open_ai_newsletter_modal';
 
 export const CONTENT_BLOCK_ID = 'content_block';
 export const CONTENT_ACTION_ID = 'content_input';

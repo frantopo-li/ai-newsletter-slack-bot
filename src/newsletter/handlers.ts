@@ -1,6 +1,10 @@
 import type { App } from '@slack/bolt';
 import { postToChannel } from './channel';
-import { NEWSLETTER_COMMAND, NEWSLETTER_VIEW_CALLBACK_ID } from './constants';
+import {
+  NEWSLETTER_COMMAND,
+  NEWSLETTER_SHORTCUT_CALLBACK_ID,
+  NEWSLETTER_VIEW_CALLBACK_ID,
+} from './constants';
 import { notifyError, type FailedStep } from './error-alert';
 import { newsletterModal } from './modal';
 import { parseSubmission } from './submission';
@@ -18,6 +22,19 @@ export function registerNewsletterHandlers(app: App): void {
       });
     } catch (error) {
       logger.error('Error opening the modal:', error);
+    }
+  });
+
+  app.shortcut(NEWSLETTER_SHORTCUT_CALLBACK_ID, async ({ ack, shortcut, client, logger }) => {
+    await ack();
+
+    try {
+      await client.views.open({
+        trigger_id: shortcut.trigger_id,
+        view: newsletterModal,
+      });
+    } catch (error) {
+      logger.error('Error opening the modal from shortcut:', error);
     }
   });
 
